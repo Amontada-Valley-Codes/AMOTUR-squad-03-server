@@ -1,3 +1,4 @@
+import { PartialType } from "@nestjs/swagger"
 
 type imagens = string[]
  
@@ -19,3 +20,5 @@ export class createplaceDto {
   logo: string 
   imagens: imagens
 }
+
+export class updateplaceDto extends PartialType(createplaceDto)   {}
