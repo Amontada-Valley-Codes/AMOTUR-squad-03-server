@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { PlaceService } from './place.service';
 import { ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
-import { createplaceDto } from './place.dto';
+import { createplaceDto, updateplaceDto } from './place.dto';
 
 @Controller('place')
 export class PlaceController {
@@ -31,7 +31,7 @@ export class PlaceController {
     }
 
     @Put(':id')
-    update(@Param('id') id: string, @Body() data:any) {
+    update(@Param('id') id: string, @Body() data:updateplaceDto) {
         return this.placeService.update(id, data)
     }
 

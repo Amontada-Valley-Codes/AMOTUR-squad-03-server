@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger"
 import { PartialType } from "@nestjs/swagger"
 
-type imagens = string[]
+type images = string[]
 
 type coordenadas = {
 lat: number
@@ -22,8 +22,8 @@ export class createplaceDto {
   contacts: contacts;
   @ApiProperty({example:"http://luarDoSertao/logo.png",description:"logo do lugar"})
   logo: string 
-  @ApiProperty({example:["http://img1.jpg","http://img1.jpg","http://img1.jpg"],description:"logo do lugar"})
-  images: imagens
+  @ApiProperty({example:["http://img1.jpg","http://img2.jpg","http://img3.jpg"],description:"logo do lugar"})
+  images: images
 }
 
 export class updateplaceDto extends PartialType(createplaceDto)   {}
