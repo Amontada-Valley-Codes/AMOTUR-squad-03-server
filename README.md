@@ -48,11 +48,9 @@ npm run start:dev
 #### Com o servidor rodando, basta ir no navegador e acessar:
 ### localhost:3000/api
 
-
-
-
-
-
-
-
-
+## Para ver o banco de Dados
+### Verificar se o banco de dados está rodando no docker 
+#### Se estiver basta fazer:
+```bash
+npm run prisma:studio
+```
