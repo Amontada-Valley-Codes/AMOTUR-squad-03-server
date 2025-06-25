@@ -20,13 +20,9 @@ model Place {
   description String
   coordinates Json
   contacts  Json
-  images Images[]
-  
+  logo String
+  images String[]
+
 }
  
-model Images{
-  id String  @id @default(uuid())
-  linkImage String
-  IdPlace String
-  place Place @relation(fields: [IdPlace],references: [id])  
-}
+  
