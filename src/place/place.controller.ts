@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Put, Query } from '@nestjs/common';
 import { PlaceService } from './place.service';
 import { ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 
@@ -6,6 +6,11 @@ import { ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 export class PlaceController {
 
     constructor(private placeService: PlaceService){}
+
+    @Put()
+    crete(@Body() data: any) {
+        return this.placeService.create(data)
+    }
 
     @Get('all')
     @ApiOperation({summary: 'Listar Todos os locais'})
@@ -22,5 +27,15 @@ export class PlaceController {
         if(type){
             return this.placeService.findAllFromType(type)
         }
+    }
+
+    @Put(':id')
+    update(@Param('id') id: string, @Body() date:any) {
+        return this.placeService.update(id, date)
+    }
+
+    @Delete(':id')
+    remove(@Param('id') id: string) {
+        return this.placeService.remove(id)
     }
 }
