@@ -16,8 +16,9 @@ $ npm install
 
 ## Banco de dados 
 
-### Para usar o Banco de dados precisa instalar o Docker
-#### Com o docker instalado 
+### Para usar o Banco de dados precisa instalar o Docker e funcionando
+
+#### Com o docker instalado,confugurado e inicializado
 Vá no arquvio .env.example e altere as variáveis e apague a extensão .example para ter seu o seu arquivo .env   
 
 #### Instalar o banco de dados no docker 
@@ -29,15 +30,7 @@ npm run docker:compose
 criando as tabelas:
 ```bash
 npm run prisma:create
-## irá pedir um nome (ex: init ou create_table)
-```
-colocando as tabelas no banco de dados:
-```bash
-npm run prisma:activate
-```
-caso der algum erro nesse processo:
-```bash
-npm run prisma:reset
+
 ```
 ## Rodar a aplicação
 ### Para rodar o servidor e ter as rotas rodando em localhost:3000 
