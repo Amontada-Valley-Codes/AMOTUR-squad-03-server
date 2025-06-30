@@ -2,9 +2,10 @@ import { Module } from '@nestjs/common';
 import { PlaceModule } from './place/place.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { PlaceService } from './place/place.service';
+import { UserModule } from './user/user.module';
 
 @Module({
-  imports: [PlaceModule, PrismaModule],
+  imports: [PlaceModule, PrismaModule, UserModule],
   controllers: [],
   providers: []
 })

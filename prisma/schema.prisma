@@ -23,6 +23,15 @@ model Place {
   logo String
   images String[]
 }
- 
 
-  
+model Users {
+  id String @id @default(uuid())
+  email String @unique
+  password String 
+  role RoleUsers @default(TURISTA)
+}
+
+enum RoleUsers {
+  ADMIN
+  TURISTA
+}  
