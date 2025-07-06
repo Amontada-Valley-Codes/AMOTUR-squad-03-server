@@ -12,6 +12,7 @@
     "docker:compose": "docker-compose up -d",
     "prisma:generate": "npx prisma generate",
     "prisma:create": "npx prisma migrate deploy",
+    "prisma:reset":"npx prisma migrate reset",
     "prisma:studio": "npx prisma studio",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
