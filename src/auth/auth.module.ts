@@ -4,13 +4,17 @@ import { AuthService } from './auth.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './jwt.strategy';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    JwtModule.register({
-      secret: process.env.SECRET_KEY,
-      signOptions: {expiresIn: '1d'}
-      
+    JwtModule.registerAsync({
+      imports:[ConfigModule],
+      inject:[ConfigService],
+      useFactory:async (config:ConfigService) => ({
+        secret:config.get<string>('SECRET_KEY'),
+        signOptions: {expiresIn: '1d'}  
+      })
     })
   ],
   controllers: [AuthController],

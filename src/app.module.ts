@@ -4,9 +4,12 @@ import { PrismaModule } from './prisma/prisma.module';
 import { PlaceService } from './place/place.service';
 import { AuthModule } from './auth/auth.module';
 import { UploadModule } from './upload/upload.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [PlaceModule, PrismaModule, AuthModule, UploadModule],
+  imports: [
+    ConfigModule.forRoot({isGlobal:true})
+    ,PlaceModule, PrismaModule, AuthModule, UploadModule],
   controllers: [],
   providers: []
 })

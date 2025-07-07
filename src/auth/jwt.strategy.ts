@@ -1,21 +1,18 @@
 import { ExtractJwt, Strategy } from "passport-jwt";
 import { PassportStrategy } from "@nestjs/passport";
 import { Injectable } from "@nestjs/common";
-
-const rawSecretKey = process.env.SECRET_KEY
-
-if(!rawSecretKey){
-    throw new Error('SECRET_KEY não está definido')
-}
-
-const secretKey: string = rawSecretKey
+import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-     constructor(){
+     constructor(configService:ConfigService){
+        const jwtSecret = configService.get<string>('SECRET_KEY')
+        if(!jwtSecret){
+            throw new Error('SECRET_KEY não está definida')
+        }
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-            secretOrKey: secretKey
+            secretOrKey: jwtSecret
         })
     }
 
