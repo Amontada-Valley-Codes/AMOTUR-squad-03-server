@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Param, Post, Put, Query, UploadedFiles, UseInterceptors, UseGuards  } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Param, Post, Put, Query, UploadedFiles, UseInterceptors, UseGuards } from '@nestjs/common';
 import { PlaceService } from './place.service';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiParam, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
@@ -14,58 +14,58 @@ import { AdminGuard } from 'src/auth/admin.guard';
 @Controller('place')
 export class PlaceController {
 
-    constructor(private placeService: PlaceService, private uploadService:UploadService){}
-    
+    constructor(private placeService: PlaceService, private uploadService: UploadService) { }
+
     @ApiBearerAuth()
     @UseGuards(AdminGuard)
     @Post()
-    @ApiOperation({summary: 'Cria um local'})
-    @ApiResponse({status:201, description: "Local criado com sucesso!!"})
-    @ApiResponse({status:400, description: "Dados inválidos"})
+    @ApiOperation({ summary: 'Cria um local' })
+    @ApiResponse({ status: 201, description: "Local criado com sucesso!!" })
+    @ApiResponse({ status: 400, description: "Dados inválidos" })
+    @ApiResponse({ status: 409, description: 'Coordenadas já cadastradas.' })
     @ApiConsumes('multipart/form-data')
     @ApiBody({
-            description: 'Cria um local',
-            schema: {
+        description: 'Cria um local',
+        schema: {
             type: 'object',
             properties: {
                 name: { type: 'string', example: 'luar Do Sertão' },
                 type: { type: 'string', example: 'Pousada' },
                 description: { type: 'string', example: 'A melhor pousada' },
-                coordinates: { type: 'string', example: {"lat":1236363,"lon":-4253674} },
-                contacts: { type: 'string', example: {"telefone":"(88)9458484247","email":"luardosertao@gamil.com","site":"www.luardoSertao.com"} },
+                coordinates: { type: 'string', example: { "lat": 1236363, "lon": -4253674 } },
+                contacts: { type: 'string', example: { "telefone": "(88)9458484247", "email": "luardosertao@gamil.com", "site": "www.luardoSertao.com" } },
                 logo: { type: 'string', format: 'binary' },
                 photos: {
-                type: 'array',
-                items: { type: 'string', format: 'binary' },
+                    type: 'array',
+                    items: { type: 'string', format: 'binary' },
                 },
             },
-            required: ['name','type', 'description','coordinates', 'contacts', 'logo', 'photos' ],
-            },
-        })
-        @UseInterceptors(
-            AnyFilesInterceptor({
+        },
+    })
+    @UseInterceptors(
+        AnyFilesInterceptor({
             storage: diskStorage({
                 destination: './uploads',
                 filename: (req, file, cb) => {
-                const unique = Date.now() + '-' + Math.round(Math.random() * 1e9);
-                cb(null, unique + extname(file.originalname));
+                    const unique = Date.now() + '-' + Math.round(Math.random() * 1e9);
+                    cb(null, unique + extname(file.originalname));
                 },
             }),
             limits: {
                 fileSize: 500 * 1024, // 500kb
             },
-            }),
-        )  
-    async createPlace(@UploadedFiles() files: Array<Express.Multer.File>,@Body() body: any,) {
+        }),
+    )
+    async createPlace(@UploadedFiles() files: Array<Express.Multer.File>, @Body() body: any,) {
         try {
             const logoFile = files.find((file) => file.fieldname === 'logo');
             const photoFiles = files.filter((file) => file.fieldname === 'photos');
             // Aqui você pode fazer o upload (ex: Cloudinary) e salvar no banco
-            if(!logoFile){
+            if (!logoFile) {
                 throw new BadRequestException('Logo é obrigatória');
             }
             const logoUrl = await this.uploadService.uploadImage(logoFile.path);
-            if(!logoUrl){
+            if (!logoUrl) {
                 throw new BadRequestException('Logo é obrigatória');
             }
             const uploadedImages = await Promise.all(photoFiles.map(f => this.uploadService.uploadImage(f.path)));
@@ -86,19 +86,19 @@ export class PlaceController {
 
     @ApiBearerAuth()
     @Get('all')
-    @ApiOperation({summary: 'Listar Todos os locais'})
-    @ApiResponse({status:200, description: "Lista de locais retornada com sucesso!!"})
+    @ApiOperation({ summary: 'Listar Todos os locais' })
+    @ApiResponse({ status: 200, description: "Lista de locais retornada com sucesso!!" })
     @HttpCode(HttpStatus.OK)
-    findAll(){
+    findAll() {
         return this.placeService.findAll()
     }
-    
+
     @ApiBearerAuth()
     @Get('id=:id')
-    @ApiOperation({summary: 'Lista um local por id'})
-    @ApiResponse({status:200, description: "Local encotrado com sucesso!!"})
-    @ApiResponse({status:404, description:"Local não encontrado"})
-    @ApiParam({ name: 'id', type: String, description: 'Id do local',example:"4f4e7edf-2c82-4a43-ab47-d49ed9d0cb0a" })
+    @ApiOperation({ summary: 'Lista um local por id' })
+    @ApiResponse({ status: 200, description: "Local encotrado com sucesso!!" })
+    @ApiResponse({ status: 404, description: "Local não encontrado" })
+    @ApiParam({ name: 'id', type: String, description: 'Id do local', example: "4f4e7edf-2c82-4a43-ab47-d49ed9d0cb0a" })
     @HttpCode(HttpStatus.OK)
     findFromId(@Param('id') id: string) {
         return this.placeService.findById(id)
@@ -106,44 +106,112 @@ export class PlaceController {
 
     @ApiBearerAuth()
     @Get()
-    @ApiOperation({summary: 'Listar Todos os locais por tipo'})
-    @ApiQuery({name:'type',type:String, description:'Tipo do local',example:"hotel,restaurante"})
-    @ApiResponse({status:200,description: 'Listar locais pelo o tipo retornada com sucesso!!'})
-    @ApiResponse({status:400, description: "Dados inválidos"})
+    @ApiOperation({ summary: 'Listar Todos os locais por tipo' })
+    @ApiQuery({ name: 'type', type: String, description: 'Tipo do local', example: "hotel,restaurante" })
+    @ApiResponse({ status: 200, description: 'Listar locais pelo o tipo retornada com sucesso!!' })
+    @ApiResponse({ status: 400, description: "Dados inválidos" })
     @HttpCode(HttpStatus.OK)
 
-    findAllfromTyoe(@Query('type') type?: string){
-        if(type){
+    findAllfromTyoe(@Query('type') type?: string) {
+        if (type) {
             return this.placeService.findAllFromType(type)
-        }else{
-            throw  new HttpException('type inválidos', HttpStatus.BAD_REQUEST);
+        } else {
+            throw new HttpException('type inválidos', HttpStatus.BAD_REQUEST);
         }
     }
 
     @ApiBearerAuth()
     @UseGuards(AdminGuard)
     @Put('id=:id')
-    @ApiOperation({summary: 'Atualiza um local'})
-    @ApiResponse({status:201, description: "Local atualizado com sucesso!!"})
-    @ApiResponse({status:400, description: "Dados inválidos"})
-    @ApiBody({type:updateplaceDto})
-    @ApiParam({ name: 'id', type: String, description: 'Id do local',example:"4f4e7edf-2c82-4a43-ab47-d49ed9d0cb0a" })
-    @HttpCode(HttpStatus.OK)
-    update(@Param('id') id: string, @Body() data:updateplaceDto) {
+    @ApiOperation({ summary: 'Atualiza um local' })
+    @ApiResponse({ status: 200, description: 'Local atualizado com sucesso!' })
+    @ApiResponse({ status: 400, description: 'Dados inválidos' })
+    @ApiResponse({ status: 409, description: 'Coordenadas já cadastradas.' })
+    @ApiParam({ name: 'id', type: String, description: 'Id do local', example: "4f4e7edf-2c82-4a43-ab47-d49ed9d0cb0a" })
+    @ApiConsumes('multipart/form-data')
+    @ApiBody({
+        description: 'Atualiza um local',
+        schema: {
+            type: 'object',
+            properties: {
+                name: { type: 'string', example: 'luar Do Sertão' },
+                type: { type: 'string', example: 'Pousada' },
+                description: { type: 'string', example: 'A melhor pousada' },
+                coordinates: {
+                    type: 'string',
+                    example: '{"lat":1236363,"lon":-4253674}',
+                },
+                contacts: {
+                    type: 'string',
+                    example: '{"telefone":"(88)9458484247","email":"luardosertao@gmail.com","site":"www.luardoSertao.com"}',
+                },
+                logo: { type: 'string', format: 'binary' },
+                photos: {
+                    type: 'array',
+                    items: { type: 'string', format: 'binary' },
+                },
+            },
+        },
+    })
+    @UseInterceptors(
+        AnyFilesInterceptor({
+            storage: diskStorage({
+                destination: './uploads',
+                filename: (req, file, cb) => {
+                    const unique = Date.now() + '-' + Math.round(Math.random() * 1e9);
+                    cb(null, unique + extname(file.originalname));
+                },
+            }),
+            limits: {
+                fileSize: 500 * 1024, // 500kb
+            },
+        }),
+    )
+    async updatePlace(
+        @Param('id') id: string,
+        @UploadedFiles() files: Array<Express.Multer.File>,
+        @Body() body: any,
+    ) {
         try {
-            return this.placeService.update(id, data)
+            const logoFile = files.find((file) => file.fieldname === 'logo');
+            const photoFiles = files.filter((file) => file.fieldname === 'photos');
+
+            let logoUrl: string | undefined;
+            if (logoFile) {
+                logoUrl = await this.uploadService.uploadImage(logoFile.path);
+            }
+
+            let photoUrls: string[] | undefined;
+            if (photoFiles.length > 0) {
+                const uploadedImages = await Promise.all(
+                    photoFiles.map((f) => this.uploadService.uploadImage(f.path)),
+                );
+                photoUrls = uploadedImages.filter((url): url is string => !!url);
+            }
+
+            const updateData: any = {
+                ...(body.name && { name: body.name }),
+                ...(body.type && { type: body.type }),
+                ...(body.description && { description: body.description }),
+                ...(body.coordinates && { coordinates: JSON.parse(body.coordinates) }),
+                ...(body.contacts && { contacts: JSON.parse(body.contacts) }),
+                ...(logoUrl && { logo: logoUrl }),
+                ...(photoUrls && photoUrls.length > 0 && { images: photoUrls }),
+            };
+
+            return this.placeService.update(id, updateData);
         } catch (error) {
-            new HttpException('Dados inválidos', HttpStatus.BAD_REQUEST);
+            throw new HttpException('Dados inválidos', HttpStatus.BAD_REQUEST);
         }
     }
 
     @ApiBearerAuth()
     @UseGuards(AdminGuard)
     @Delete('id=:id')
-    @ApiOperation({summary: 'Deleta um local'})
-    @ApiResponse({status:200, description: "Local deletado com sucesso!!"})
-    @ApiResponse({status:404, description: "Registro não encontrado"})
-    @ApiParam({ name: 'id', type: String, description: 'Id do local',example:"4f4e7edf-2c82-4a43-ab47-d49ed9d0cb0a" })
+    @ApiOperation({ summary: 'Deleta um local' })
+    @ApiResponse({ status: 200, description: "Local deletado com sucesso!!" })
+    @ApiResponse({ status: 404, description: "Registro não encontrado" })
+    @ApiParam({ name: 'id', type: String, description: 'Id do local', example: "4f4e7edf-2c82-4a43-ab47-d49ed9d0cb0a" })
     @HttpCode(HttpStatus.OK)
     remove(@Param('id') id: string) {
         try {
