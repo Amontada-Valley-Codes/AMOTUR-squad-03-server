@@ -37,7 +37,7 @@ npm run prisma:create
 
 ```
 ## Rodar a aplicação
-### Para rodar o servidor e ter as rotas rodando em localhost:3000 
+### Para rodar o servidor e ter as rotas rodando em localhost:3123
 ```bash
 npm run start:dev
 ```
