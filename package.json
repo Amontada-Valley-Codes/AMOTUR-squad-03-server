@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "npx run prisma:generate && npx run prisma:create && nest build",
+    "build": "npm run prisma:generate && npm run prisma:create && nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "docker:compose": "docker-compose up -d",
