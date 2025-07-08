@@ -14,7 +14,7 @@ async function bootstrap() {
     scheme:'bearer',
     bearerFormat:'JWT',
     name:'Authorization',
-    in:'heaher'
+    in:'header'
     })
     .build();
 
@@ -32,6 +32,6 @@ async function bootstrap() {
   origin: [process.env.FRONTEND_URL ?? 'http://localhost:3000'],
   credentials:true
 }); 
-  await app.listen(process.env.PORT ?? 3123);
+  await app.listen(process.env.PORT || 3123);
 }
 bootstrap();
