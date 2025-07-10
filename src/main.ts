@@ -4,12 +4,15 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 
 import * as basicAuth from "express-basic-auth"
+import { UserService } from './user/user.service';
 
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const password = process.env.SWAGGER_PASSWORD || 'password';
-
+  
+  const userService = app.get(UserService)
+  
   app.use(
     ['/api'],
     basicAuth({
@@ -46,5 +49,8 @@ async function bootstrap() {
   credentials:true
 }); 
   await app.listen(process.env.PORT || 3123);
+  
+  await userService.Seed()
+
 }
 bootstrap();

@@ -5,11 +5,12 @@ import { PlaceService } from './place/place.service';
 import { AuthModule } from './auth/auth.module';
 import { UploadModule } from './upload/upload.module';
 import { ConfigModule } from '@nestjs/config';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({isGlobal:true})
-    ,PlaceModule, PrismaModule, AuthModule, UploadModule],
+    ,PlaceModule, PrismaModule, AuthModule, UploadModule, UserModule],
   controllers: [],
   providers: []
 })
