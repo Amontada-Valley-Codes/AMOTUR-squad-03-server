@@ -18,6 +18,9 @@ echo "Banco de dados está online! Rodando as migrações..."
 # Executa as migrações do Prisma
 npx prisma migrate deploy
 
+echo "Executando seed inicial..."
+node seed.js
+
 echo "Iniciando o NestJS..."
 
 # Inicia a aplicação NestJS
