@@ -6,7 +6,7 @@ const admin = process.env.ADMIN_INITIAL_EMAIL;
 const password = process.env.ADMIN_INITIAL_PASSWORD;
 
 async function main() {
-    await prisma.user.upsert({
+    await prisma.Users.upsert({
         where: { email: admin },
         update: {},
         create: {
