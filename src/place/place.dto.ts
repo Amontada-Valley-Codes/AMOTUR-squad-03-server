@@ -13,7 +13,7 @@ class Coordinates {
 
 }
 
-export class contacts {
+export class Contacts {
   @IsOptional()
   @IsString()
   telefone?: string;
@@ -53,8 +53,8 @@ export class createplaceDto {
 
   @ApiProperty({example:{"telefone":"(88)8888888","site":"www.luardosertao.com.br","email":"luardosertao@email.com","instagram":"https://www.instagram.com/luardosertão/"},description:"contatos do lugar"})
   @ValidateNested()
-  @Type(()=>contacts)
-  contacts: contacts;
+  @Type(()=>Contacts)
+  contacts: Contacts;
 
   @ApiProperty({example:"http://luarDoSertao.com/logo.png",description:"logo do lugar"})
   @IsString({ message: "O link da logo deve ser uma string" })

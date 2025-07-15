@@ -8,6 +8,8 @@ import { diskStorage } from 'multer';
 import { createplaceDto, updateplaceDto } from './place.dto';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { AdminGuard } from 'src/auth/admin.guard';
+import { plainToInstance } from 'class-transformer';
+import { validate } from 'class-validator';
 
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
@@ -70,15 +72,22 @@ export class PlaceController {
             }
             const uploadedImages = await Promise.all(photoFiles.map(f => this.uploadService.uploadImage(f.path)));
             const photoUrls = uploadedImages.filter((url): url is string => !!url);
-            return this.placeService.create({
-                name: body.name,
-                type: body.type,
-                description: body.description,
-                coordinates: JSON.parse(body.coordinates),
-                contacts: JSON.parse(body.contacts),
-                logo: logoUrl,
-                images: photoUrls,
-            })
+            const parsedBody = {
+            ...body,
+            coordinates: JSON.parse(body.coordinates),
+            contacts: JSON.parse(body.contacts),
+            logo: logoUrl,
+            images: photoUrls,
+            };
+
+            const dto = plainToInstance(createplaceDto, parsedBody);
+            const errors = await validate(dto, { whitelist: true, forbidNonWhitelisted: true });
+
+            if (errors.length > 0) {
+            console.error(errors);
+            throw new BadRequestException('Dados inválidos: ' + JSON.stringify(errors));
+            }            
+            return this.placeService.create(dto)
         } catch (error) {
             throw new HttpException('Dados inválidos', HttpStatus.BAD_REQUEST);
         }
@@ -188,18 +197,30 @@ export class PlaceController {
                 );
                 photoUrls = uploadedImages.filter((url): url is string => !!url);
             }
-
-            const updateData: any = {
-                ...(body.name && { name: body.name }),
-                ...(body.type && { type: body.type }),
-                ...(body.description && { description: body.description }),
-                ...(body.coordinates && { coordinates: JSON.parse(body.coordinates) }),
-                ...(body.contacts && { contacts: JSON.parse(body.contacts) }),
-                ...(logoUrl && { logo: logoUrl }),
-                ...(photoUrls && photoUrls.length > 0 && { images: photoUrls }),
+            const rawData = {
+            ...body,
+            ...(body.coordinates && { coordinates: JSON.parse(body.coordinates) }),
+            ...(body.contacts && { contacts: JSON.parse(body.contacts) }),
+            ...(logoUrl && { logo: logoUrl }),
+            ...(photoUrls && photoUrls.length > 0 && { images: photoUrls }),
             };
 
-            return this.placeService.update(id, updateData);
+            // Transforma em instância do DTO de update
+            const dto = plainToInstance(updateplaceDto, rawData);
+
+            // Valida apenas os campos presentes
+            const errors = await validate(dto, {
+            whitelist: true,
+            forbidNonWhitelisted: true,
+            skipMissingProperties: true, // <- ESSENCIAL para DTO parcial
+            });
+
+            if (errors.length > 0) {
+            console.error(errors);
+            throw new BadRequestException('Dados inválidos: ' + JSON.stringify(errors));
+            }
+
+            return this.placeService.update(id, dto);
         } catch (error) {
             throw new HttpException('Dados inválidos', HttpStatus.BAD_REQUEST);
         }
