@@ -165,7 +165,6 @@ export class PlaceController {
     @UseInterceptors(
         AnyFilesInterceptor({
             storage: diskStorage({
-                destination: './uploads',
                 filename: (req, file, cb) => {
                     const unique = Date.now() + '-' + Math.round(Math.random() * 1e9);
                     cb(null, unique + extname(file.originalname));
