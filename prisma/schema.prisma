@@ -35,3 +35,12 @@ enum RoleUsers {
   ADMIN
   TURISTA
 }  
+
+model Mare {
+  id     Int    @id @default(autoincrement())
+  data   String
+  hora   String
+  altura Float
+
+  @@unique([data, hora], name: "data_hora")
+}
