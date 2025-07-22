@@ -7,11 +7,12 @@ import { UploadModule } from './upload/upload.module';
 import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user/user.module';
 import { MaresModule } from './mares/mares.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({isGlobal:true})
-    ,PlaceModule, PrismaModule, AuthModule, UploadModule, UserModule, MaresModule],
+    ,PlaceModule, PrismaModule, AuthModule, UploadModule, UserModule, MaresModule, DashboardModule],
   controllers: [],
   providers: []
 })

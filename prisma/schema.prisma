@@ -17,6 +17,7 @@ model Place {
   id String  @id @default(uuid())
   name String
   type String
+  localization String
   description String
   coordinates Json @unique
   contacts  Json
@@ -28,6 +29,7 @@ model Users {
   id String @id @default(uuid())
   email String @unique
   password String 
+  lastLoginAt String?
   role RoleUsers @default(TURISTA)
 }
 

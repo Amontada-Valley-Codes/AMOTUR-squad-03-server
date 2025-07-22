@@ -31,6 +31,7 @@ export class PlaceController {
             type: 'object',
             properties: {
                 name: { type: 'string', example: 'luar Do Sertão' },
+                localization: { type: 'string', example: 'amontada' },
                 type: { type: 'string', example: 'Pousada' },
                 description: { type: 'string', example: 'A melhor pousada' },
                 coordinates: { type: 'string', example: { "lat": 1236363, "lon": -4253674 } },
@@ -237,6 +238,20 @@ export class PlaceController {
             return new HttpException('Registro não encontrado', HttpStatus.NOT_FOUND);
         }
     }
+
+    @Get('page')
+    @ApiOperation({ summary: 'Listar Todos os locais por paginação' })
+    @ApiQuery({ name: 'page', type: Number, description: 'Numero da página', example: "1" })
+    @ApiQuery({ name: 'limit', type: Number, description: 'limite por página', example: "10" })
+    @ApiResponse({ status: 200, description: 'Listar locais por pagina com sucesso!!' })
+    @ApiResponse({ status: 400, description: "Dados inválidos" })
+    @HttpCode(HttpStatus.OK)
+    pagination(
+        @Query('page') page = '1',
+        @Query('limit') limit = '10',
+    ) {
+    return this.placeService.pagination(+page, +limit);
+  }
 }
 
 
