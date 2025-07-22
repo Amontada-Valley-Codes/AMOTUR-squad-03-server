@@ -9,7 +9,7 @@ class Coordinates {
   lat: number;
 
   @IsNumber()
-  lon: number
+  lgn: number
 
 }
 
@@ -41,12 +41,17 @@ export class createplaceDto {
   @IsNotEmpty({message:"O tipo é obrigatório"})
   type: string;
 
+  @ApiProperty({example:"pousada",description:"tipo do lugar"})
+  @IsString({ message: "O tipo deve ser uma string" })
+  @IsNotEmpty({message:"O tipo é obrigatório"})
+  localization: string;
+
   @ApiProperty({example:"um lugar bom",description:"descrição do lugar"})
   @IsString({ message: "A descrição deve ser uma string" })
   @IsNotEmpty({message:"A descrição é obrigatório"})
   description: string;
 
-  @ApiProperty({example:{"lat":-52525,"lon":5213566},description:"coordenadas do lugar"})
+  @ApiProperty({example:{"lat":-52525,"lgn":5213566},description:"coordenadas do lugar"})
   @ValidateNested()
   @Type(()=>Coordinates)
   coordinates: Coordinates;

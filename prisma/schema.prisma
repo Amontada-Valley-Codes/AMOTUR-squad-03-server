@@ -17,6 +17,7 @@ model Place {
   id String  @id @default(uuid())
   name String
   type String
+  localization String
   description String
   coordinates Json @unique
   contacts  Json
@@ -29,6 +30,7 @@ model Users {
   email String @unique
   password String?
   googleId String? @unique
+  lastLoginAt String?
   role RoleUsers @default(TURISTA)
 }
 
@@ -36,3 +38,12 @@ enum RoleUsers {
   ADMIN
   TURISTA
 }  
+
+model Mare {
+  id     Int    @id @default(autoincrement())
+  data   String
+  hora   String
+  altura Float
+
+  @@unique([data, hora], name: "data_hora")
+}

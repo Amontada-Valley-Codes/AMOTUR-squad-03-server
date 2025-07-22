@@ -12,14 +12,13 @@ import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
 @Controller('place')
 export class PlaceController {
 
     constructor(private placeService: PlaceService, private uploadService: UploadService) { }
 
     @ApiBearerAuth()
-    @UseGuards(AdminGuard)
+    @UseGuards(JwtAuthGuard,AdminGuard)
     @Post()
     @ApiOperation({ summary: 'Cria um local' })
     @ApiResponse({ status: 201, description: "Local criado com sucesso!!" })
@@ -32,9 +31,10 @@ export class PlaceController {
             type: 'object',
             properties: {
                 name: { type: 'string', example: 'luar Do Sertão' },
+                localization: { type: 'string', example: 'amontada' },
                 type: { type: 'string', example: 'Pousada' },
                 description: { type: 'string', example: 'A melhor pousada' },
-                coordinates: { type: 'string', example: { "lat": 1236363, "lon": -4253674 } },
+                coordinates: { type: 'string', example: { "lat": 1236363, "lgn": -4253674 } },
                 contacts: { type: 'string', example: { "telefone": "(88)9458484247", "email": "luardosertao@gamil.com", "site": "www.luardoSertao.com" } },
                 logo: { type: 'string', format: 'binary' },
                 photos: {
@@ -47,7 +47,6 @@ export class PlaceController {
     @UseInterceptors(
         AnyFilesInterceptor({
             storage: diskStorage({
-                destination: './uploads',
                 filename: (req, file, cb) => {
                     const unique = Date.now() + '-' + Math.round(Math.random() * 1e9);
                     cb(null, unique + extname(file.originalname));
@@ -93,7 +92,6 @@ export class PlaceController {
         }
     }
 
-    @ApiBearerAuth()
     @Get('all')
     @ApiOperation({ summary: 'Listar Todos os locais' })
     @ApiResponse({ status: 200, description: "Lista de locais retornada com sucesso!!" })
@@ -103,6 +101,7 @@ export class PlaceController {
     }
 
     @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
     @Get('id=:id')
     @ApiOperation({ summary: 'Lista um local por id' })
     @ApiResponse({ status: 200, description: "Local encotrado com sucesso!!" })
@@ -113,7 +112,6 @@ export class PlaceController {
         return this.placeService.findById(id)
     }
 
-    @ApiBearerAuth()
     @Get()
     @ApiOperation({ summary: 'Listar Todos os locais por tipo' })
     @ApiQuery({ name: 'type', type: String, description: 'Tipo do local', example: "hotel,restaurante" })
@@ -130,7 +128,7 @@ export class PlaceController {
     }
 
     @ApiBearerAuth()
-    @UseGuards(AdminGuard)
+    @UseGuards(JwtAuthGuard,AdminGuard)
     @Put('id=:id')
     @ApiOperation({ summary: 'Atualiza um local' })
     @ApiResponse({ status: 200, description: 'Local atualizado com sucesso!' })
@@ -148,7 +146,7 @@ export class PlaceController {
                 description: { type: 'string', example: 'A melhor pousada' },
                 coordinates: {
                     type: 'string',
-                    example: '{"lat":1236363,"lon":-4253674}',
+                    example: '{"lat":1236363,"lgn":-4253674}',
                 },
                 contacts: {
                     type: 'string',
@@ -226,7 +224,7 @@ export class PlaceController {
     }
 
     @ApiBearerAuth()
-    @UseGuards(AdminGuard)
+    @UseGuards(JwtAuthGuard,AdminGuard)
     @Delete('id=:id')
     @ApiOperation({ summary: 'Deleta um local' })
     @ApiResponse({ status: 200, description: "Local deletado com sucesso!!" })
@@ -240,6 +238,20 @@ export class PlaceController {
             return new HttpException('Registro não encontrado', HttpStatus.NOT_FOUND);
         }
     }
+
+    @Get('page')
+    @ApiOperation({ summary: 'Listar Todos os locais por paginação' })
+    @ApiQuery({ name: 'page', type: Number, description: 'Numero da página', example: "1" })
+    @ApiQuery({ name: 'limit', type: Number, description: 'limite por página', example: "10" })
+    @ApiResponse({ status: 200, description: 'Listar locais por pagina com sucesso!!' })
+    @ApiResponse({ status: 400, description: "Dados inválidos" })
+    @HttpCode(HttpStatus.OK)
+    pagination(
+        @Query('page') page = '1',
+        @Query('limit') limit = '10',
+    ) {
+    return this.placeService.pagination(+page, +limit);
+  }
 }
 
 

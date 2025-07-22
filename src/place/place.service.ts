@@ -12,11 +12,11 @@ export class PlaceService {
 
     async create(dto: createplaceDto): Promise<Place> {
         const { coordinates, contacts, ...rest } = dto;
-        const { lat, lon } = coordinates
+        const { lat, lgn } = coordinates
         const existingCoordinate = await this.prisma.place.findFirst({
             where: {
                 coordinates: {
-                    equals: { lat, lon }
+                    equals: { lat, lgn }
                 },
             },
         });
@@ -28,7 +28,7 @@ export class PlaceService {
             ...dto,
             coordinates: {
                 lat: coordinates.lat,
-                lon: coordinates.lon,
+                lgn: coordinates.lgn,
             },
             ...(contacts && {
                 contacts: {
@@ -75,7 +75,7 @@ export class PlaceService {
             const existingCoordinate = await this.prisma.place.findFirst({
                 where: {
                     coordinates: {
-                        equals: {lat: coordinates.lat, lon:coordinates.lon} 
+                        equals: {lat: coordinates.lat, lgn:coordinates.lgn} 
                     },
                 },
             });
@@ -88,7 +88,7 @@ export class PlaceService {
             ...(coordinates && {
                 coordinates: {
                     lat: coordinates.lat,
-                    lon: coordinates.lon,
+                    lgn: coordinates.lgn,
                 },
             }),
             ...(contacts && {
@@ -109,5 +109,29 @@ export class PlaceService {
             throw new NotFoundException(`Local com esse ID ${id} não encontrado!`)
         }
     }
+
+    async pagination(page: number, limit: number) {
+    const skip = (page - 1) * limit;
+
+    const [items, total] = await this.prisma.$transaction([
+      this.prisma.place.findMany({
+        skip,
+        take: limit,
+        orderBy: {
+          name: 'asc', 
+        },
+      }),
+      this.prisma.place.count(),
+    ]);
+
+    return {
+      data: items,
+      meta: {
+        total,
+        page,
+        lastPage: Math.ceil(total / limit),
+      },
+    };
+  }
 
 }
