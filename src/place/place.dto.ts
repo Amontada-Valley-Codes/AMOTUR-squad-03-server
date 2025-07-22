@@ -9,7 +9,7 @@ class Coordinates {
   lat: number;
 
   @IsNumber()
-  lon: number
+  lgn: number
 
 }
 
@@ -51,7 +51,7 @@ export class createplaceDto {
   @IsNotEmpty({message:"A descrição é obrigatório"})
   description: string;
 
-  @ApiProperty({example:{"lat":-52525,"lon":5213566},description:"coordenadas do lugar"})
+  @ApiProperty({example:{"lat":-52525,"lgn":5213566},description:"coordenadas do lugar"})
   @ValidateNested()
   @Type(()=>Coordinates)
   coordinates: Coordinates;

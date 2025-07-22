@@ -34,7 +34,7 @@ export class PlaceController {
                 localization: { type: 'string', example: 'amontada' },
                 type: { type: 'string', example: 'Pousada' },
                 description: { type: 'string', example: 'A melhor pousada' },
-                coordinates: { type: 'string', example: { "lat": 1236363, "lon": -4253674 } },
+                coordinates: { type: 'string', example: { "lat": 1236363, "lgn": -4253674 } },
                 contacts: { type: 'string', example: { "telefone": "(88)9458484247", "email": "luardosertao@gamil.com", "site": "www.luardoSertao.com" } },
                 logo: { type: 'string', format: 'binary' },
                 photos: {
@@ -146,7 +146,7 @@ export class PlaceController {
                 description: { type: 'string', example: 'A melhor pousada' },
                 coordinates: {
                     type: 'string',
-                    example: '{"lat":1236363,"lon":-4253674}',
+                    example: '{"lat":1236363,"lgn":-4253674}',
                 },
                 contacts: {
                     type: 'string',
