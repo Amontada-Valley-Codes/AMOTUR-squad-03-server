@@ -53,6 +53,16 @@ export class AuthService {
         credentials.email,
         credentials.password
       )
+      const hoje = new Date();
+
+      const dia = hoje.getDate();
+      const mes = String(hoje.getMonth() + 1).padStart(2,'0');
+      const ano= hoje.getFullYear();
+      const data = `${ano}-${mes}-${dia}`;
+      await this.prisma.users.update({
+        where: { id: user.id },
+        data: { lastLoginAt: data },
+      })
       const payload = {
         userId: user.id,
         email: user.email,

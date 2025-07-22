@@ -29,6 +29,7 @@ model Users {
   id String @id @default(uuid())
   email String @unique
   password String 
+  lastLoginAt String?
   role RoleUsers @default(TURISTA)
 }
 

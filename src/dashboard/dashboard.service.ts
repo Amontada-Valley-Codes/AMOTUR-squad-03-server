@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { start } from 'repl';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -46,5 +47,14 @@ export class DashboardService {
             quantidade: r._count._all
         }))
     }
-   
+  
+  async countLoggedInUsersForDay(date: string ):Promise<number> {
+const count = await this.prisma.users.count({
+    where: {
+        lastLoginAt: date
+
+    },
+});
+return count
+  }  
 }
