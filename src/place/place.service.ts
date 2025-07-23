@@ -12,11 +12,11 @@ export class PlaceService {
 
     async create(dto: createplaceDto): Promise<Place> {
         const { coordinates, contacts, ...rest } = dto;
-        const { lat, lgn } = coordinates
+        const { lat, lng } = coordinates
         const existingCoordinate = await this.prisma.place.findFirst({
             where: {
                 coordinates: {
-                    equals: { lat, lgn }
+                    equals: { lat, lng }
                 },
             },
         });
@@ -28,7 +28,7 @@ export class PlaceService {
             ...dto,
             coordinates: {
                 lat: coordinates.lat,
-                lgn: coordinates.lgn,
+                lng: coordinates.lng,
             },
             ...(contacts && {
                 contacts: {
@@ -75,7 +75,7 @@ export class PlaceService {
             const existingCoordinate = await this.prisma.place.findFirst({
                 where: {
                     coordinates: {
-                        equals: {lat: coordinates.lat, lgn:coordinates.lgn} 
+                        equals: {lat: coordinates.lat, lng:coordinates.lng} 
                     },
                 },
             });
@@ -88,7 +88,7 @@ export class PlaceService {
             ...(coordinates && {
                 coordinates: {
                     lat: coordinates.lat,
-                    lgn: coordinates.lgn,
+                    lng: coordinates.lng,
                 },
             }),
             ...(contacts && {
