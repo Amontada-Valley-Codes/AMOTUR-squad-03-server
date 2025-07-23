@@ -79,6 +79,10 @@ export class AuthService {
     }
 
     async findOrCreateGoogleUser({ googleId, email }){
+      const findEmail = await this.prisma.users.findUnique({where: {email}})
+
+      if(findEmail) throw new ConflictException('credenciais já cadastradas')
+
         let user = await this.prisma.users.findUnique({
           where: { googleId }
         })
@@ -91,7 +95,16 @@ export class AuthService {
             }
           })
         }
+      const hoje = new Date();
 
+      const dia = hoje.getDate();
+      const mes = String(hoje.getMonth() + 1).padStart(2,'0');
+      const ano= hoje.getFullYear();
+      const data = `${ano}-${mes}-${dia}`;
+      await this.prisma.users.update({
+        where: { id: user.id },
+        data: { lastLoginAt: data },
+      })
         return user
     }
 
