@@ -120,6 +120,12 @@ export class PlaceService {
         orderBy: {
           name: 'asc', 
         },
+        select:{
+            id:true,
+            name:true,
+            type:true,
+            localization:true
+        }
       }),
       this.prisma.place.count(),
     ]);
