@@ -79,15 +79,13 @@ export class AuthService {
     }
 
     async findOrCreateGoogleUser({ googleId, email }){
-      const findEmail = await this.prisma.users.findUnique({where: {email}})
-
-      if(findEmail) throw new ConflictException('credenciais já cadastradas')
-
         let user = await this.prisma.users.findUnique({
           where: { googleId }
         })
 
         if(!user){
+          const findEmail = await this.prisma.users.findUnique({where: {email}})
+          if(findEmail) throw new ConflictException('credenciais já cadastradas')
           user = await this.prisma.users.create({
             data: {
               email,
