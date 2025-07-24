@@ -4,6 +4,8 @@ import { PrismaClient } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { createplaceDto, updateplaceDto } from './place.dto';
 
+import { PlaceType } from '@prisma/client';
+
 
 @Injectable()
 export class PlaceService {
@@ -45,8 +47,8 @@ export class PlaceService {
         return this.prisma.place.findMany()
     }
 
-    async findAllFromType(type: string): Promise<Place[]> {
-        const types = type.split(','); // Divide a string em um array
+    async findAllFromType(type: PlaceType[]): Promise<Place[]> {
+        const types = type
         return this.prisma.place.findMany({
             where: {
                 type: { in: types }
