@@ -53,7 +53,7 @@ export class PlaceController {
                 },
             }),
             limits: {
-                fileSize: 500 * 1024, // 500kb
+                fileSize: 800 * 1024, // 800kb
             },
         }),
     )
