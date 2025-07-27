@@ -11,7 +11,6 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const password = process.env.SWAGGER_PASSWORD || 'password';
   
-  const userService = app.get(UserService)
   
   app.use(
     ['/api'],
@@ -50,7 +49,5 @@ async function bootstrap() {
 }); 
   await app.listen(process.env.PORT || 3123);
   
-  await userService.Seed()
-
 }
 bootstrap();

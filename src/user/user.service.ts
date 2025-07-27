@@ -7,6 +7,11 @@ import { Prisma, Users } from '@prisma/client';
 export class UserService {
     constructor(private prisma: PrismaService) {}
     
+    async onModuleInit() {
+        // Este método será chamado assim que o módulo for inicializado
+        console.log('Chamando o Seed');
+        await this.Seed();
+    }
     async Seed(){
         const admin = process.env.ADMIN_INITIAL_EMAIL;
         const password = process.env.ADMIN_INITIAL_PASSWORD;
