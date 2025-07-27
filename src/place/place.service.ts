@@ -73,18 +73,7 @@ export class PlaceService {
             throw new NotFoundException(`Local com esse ID ${id} não encontrado!`)
         }
         const { coordinates, contacts, ...rest } = dto;
-        if(coordinates){
-            const existingCoordinate = await this.prisma.place.findFirst({
-                where: {
-                    coordinates: {
-                        equals: {lat: coordinates.lat, lng:coordinates.lng} 
-                    },
-                },
-            });
-            if (existingCoordinate) {
-                throw new ConflictException('Coordenadas já cadastradas.');
-            }
-        }
+        
         const data: Prisma.PlaceUpdateInput = {
             ...rest,
             ...(coordinates && {
