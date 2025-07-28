@@ -17,7 +17,7 @@ import { GoogleService } from './google-auth.service';
       inject:[ConfigService],
       useFactory:async (config:ConfigService) => ({
         secret:config.get<string>('SECRET_KEY'),
-        signOptions: {expiresIn: '1d'}  
+        signOptions: {expiresIn: '7d'}  
       })
     })
   ],
