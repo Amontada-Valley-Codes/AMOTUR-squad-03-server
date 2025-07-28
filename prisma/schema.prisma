@@ -30,7 +30,7 @@ enum PlaceType {
   HOTEL
   POUSADA
   RESTAURANTE
-  PESTISCARIA
+  PETISCARIA
   BAR
 }
 
