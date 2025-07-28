@@ -5,11 +5,16 @@ import { RegisterUserDto } from './dto/register.dto';
 import * as bcrypt from 'bcrypt' 
 import { LoginDto } from './dto/login.dto';
 import { Users } from '@prisma/client';
+import { DateTime } from 'luxon';
+import { firstValueFrom } from 'rxjs';
+import { HttpService } from '@nestjs/axios';
 @Injectable()
 export class AuthService {
     constructor(
         private jwt: JwtService,
-        private prisma: PrismaService
+        private prisma: PrismaService,
+        private httpService: HttpService
+
     ){}
 
     async registerUser(userData: RegisterUserDto) {
@@ -59,14 +64,27 @@ export class AuthService {
         credentials.password
       )
       const hoje = new Date();
+      console.log(hoje)
+      const nowInBrasilia1 =DateTime.fromISO(DateTime.utc().toISO(), { zone: 'utc' }).setZone('America/Sao_Paulo');
 
-      const dia = hoje.getDate();
-      const mes = String(hoje.getMonth() + 1).padStart(2,'0');
-      const ano= hoje.getFullYear();
-      const data = `${ano}-${mes}-${dia}`;
-      await this.prisma.users.update({
+      console.log(nowInBrasilia1.toJSDate());
+console.log('UTC:', DateTime.utc().toISO());
+console.log('Local:', DateTime.local().toISO());
+console.log('Brasília:', DateTime.now().setZone('America/Sao_Paulo').toISO());
+// 1. Obter a hora UTC de um serviço externo confiável
+      // World Time API para exemplo: http://worldtimeapi.org/api/timezone/Etc/UTC
+      const response = await firstValueFrom(this.httpService.get('https://worldtimeapi.org/api/timezone/Etc/UTC'));
+      const externalTimestampUTC = response.data.datetime; // Ex: "2025-07-27T23:59:00.000000+00:00"
+
+      // 2. Criar um DateTime a partir do timestamp UTC e então converter para Brasília
+      const nowInBrasilia = DateTime.fromISO(externalTimestampUTC, { zone: 'utc' }).setZone('America/Sao_Paulo');
+
+      console.log(`Data/hora EXTERNA convertida para Brasília: ${nowInBrasilia.toISO()}`);
+      
+
+await this.prisma.users.update({
         where: { id: user.id },
-        data: { lastLoginAt: data },
+        data: { lastLoginAt: '2025-07-27' },
       })
       const payload = {
         userId: user.id,
