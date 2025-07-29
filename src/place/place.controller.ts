@@ -10,7 +10,7 @@ import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { AdminGuard } from 'src/auth/admin.guard';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
-import { PlaceType } from '@prisma/client';
+import { PlaceRegion, PlaceType } from '@prisma/client';
 
 @ApiBearerAuth()
 @Controller('place')
@@ -32,8 +32,8 @@ export class PlaceController {
             type: 'object',
             properties: {
                 name: { type: 'string', example: 'luar Do Sertão' },
-                localization: { type: 'string', enum: ['ICARAI', 'MOITAS', 'CAETANOS', 'FLECHEIRAS'], example: 'ICARAI' },
-                type: { type: 'string', enum: ['TURISTICO', 'HOTEL', 'POUSADA', 'RESTAURANTE', 'PESTISCARIA', 'BAR'], example: 'POUSADA' },
+                localization: { type: 'string', enum: Object.values(PlaceRegion), example: 'ICARAI' },
+                type: { type: 'string', enum: Object.values(PlaceType), example: 'POUSADA' },
                 description: { type: 'string', example: 'A melhor pousada' },
                 coordinates: { type: 'string', example: { "lat": 1236363, "lng": -4253674 } },
                 contacts: { type: 'string', example: { "telefone": "(88)9458484247", "email": "luardosertao@gamil.com", "site": "www.luardoSertao.com" } },
@@ -115,7 +115,7 @@ export class PlaceController {
 
     @Get()
     @ApiOperation({ summary: 'Listar Todos os locais por tipo' })
-    @ApiQuery({ name: 'type', type:String, enum:['TURISTICO', 'HOTEL', 'POUSADA', 'RESTAURANTE', 'PESTISCARIA', 'BAR'], description: 'Tipo do local', })
+    @ApiQuery({ name: 'type', type:String, enum: PlaceType, description: 'Tipo do local', })
     @ApiResponse({ status: 200, description: 'Listar locais pelo o tipo retornada com sucesso!!' })
     @ApiResponse({ status: 400, description: "Dados inválidos" })
     @HttpCode(HttpStatus.OK)
@@ -146,7 +146,8 @@ export class PlaceController {
             type: 'object',
             properties: {
                 name: { type: 'string', example: 'luar Do Sertão' },
-                type: { type: 'string', example: 'Pousada' },
+                localization: { type: 'string', enum: Object.values(PlaceRegion), example: 'ICARAI' },
+                type: { type: 'string', enum: Object.values(PlaceType), example: 'POUSADA' },
                 description: { type: 'string', example: 'A melhor pousada' },
                 coordinates: {
                     type: 'string',
